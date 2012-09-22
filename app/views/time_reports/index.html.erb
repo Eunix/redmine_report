@@ -1,10 +1,22 @@
 <h2>Недельные отчёты по сотрудникам</h2>
 
-Отдел:
-<% Group.all.each do |group| %>
-    <%= group.name %>
+<%= form_tag 'time_reports' do -%>
+    <fieldset class="box">
+      <legend>Выбор отчёта</legend>
+      <p>
+        <%= label_tag "Отдел" %><br/>
+        <%= select_tag "group", options_from_collection_for_select(Group.all, "id", "name") %>
+      </p>
+
+      <p>
+        <%= label_tag "Неделя" %><br/>
+        <%= text_field_tag "week" %>
+      </p>
+
+    </fieldset>
+
+    <p>
+      <%= submit_tag "Сгенерировать" %>
+    </p>
 <% end %>
-
-Неделя:
-
 

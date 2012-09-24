@@ -1,0 +1,46 @@
+<h1>Отчёт о работе</h1>
+
+<table class="list issues">
+  <thead>
+  <tr>
+    <th rowspan="2">Сотрудник</th>
+    <th colspan="5">Задачи</th>
+  </tr>
+  <tr>
+    <th>Пн</th>
+    <th>Вт</th>
+    <th>Ср</th>
+    <th>Чт</th>
+    <th>Пт</th>
+  </tr>
+  </thead>
+  <tbody>
+  <% @reports.each do |report| %>
+      <tr>
+        <td><%= report[:user_name] %></td>
+
+        <% report[:days].each do |day| %>
+            <td>
+              <table>
+                <% day[1].each do |issue_type| %>
+                    <tr>
+                      <td><%= issue_type[0] %> (<%= issue_type[1].size %>)</td>
+                      <td>
+                        <table>
+                          <% issue_type[1].each do |issue| %>
+                            <tr>
+                              <td><%= Issue.find(issue[0]).subject %></td>
+                              <td><%= issue[1] %></td>
+                            </tr>
+                          <% end %>
+                        </table>
+                      </td>
+                    </tr>
+                <% end %>
+              </table>
+            </td>
+        <% end %>
+      </tr>
+  <% end %>
+  </tbody>
+</table>

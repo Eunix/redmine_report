@@ -1,6 +1,6 @@
 <h1>Отчёт о работе</h1>
 
-<table class="list issues">
+<table class="main">
   <thead>
   <tr>
     <th rowspan="2">Сотрудник</th>
@@ -17,26 +17,45 @@
   <tbody>
   <% @reports.each do |report| %>
       <tr>
-        <td><%= report[:user_name] %></td>
+        <td class="user_name"><%= report[:user_name] %></td>
 
         <% report[:days].each do |day| %>
+
             <td>
               <table>
-                <% day[1].each do |issue_type| %>
+                <% issue_count = 0
+                   spent_count = 0.0
+                   day[1].each do |issue_type|
+                   issue_count = issue_count + issue_type[1].size
+                %>
                     <tr>
-                      <td><%= issue_type[0] %> (<%= issue_type[1].size %>)</td>
+                      <td class="issue_type"><%= issue_type[0] %> (<%= issue_type[1].size %>)</td>
                       <td>
                         <table>
-                          <% issue_type[1].each do |issue| %>
+                          <%
+                             issue_type[1].each do |issue|
+                             spent_count = spent_count + issue[1].to_f
+                          %>
                             <tr>
-                              <td><%= Issue.find(issue[0]).subject %></td>
-                              <td><%= issue[1] %></td>
+                              <td class="issue_name"><%= Issue.find(issue[0]).subject %></td>
+                              <td class="spent_time"><%= issue[1] %></td>
                             </tr>
                           <% end %>
                         </table>
                       </td>
                     </tr>
                 <% end %>
+                <tr>
+                  <td class="issue_type">Итого (<%= issue_count %>)</td>
+                  <td>
+                    <table>
+                      <tr>
+                        <td class="issue_name"></td>
+                        <td class="spent_time"><%= spent_count %></td>
+                      </tr>
+                    </table>
+                  </td>
+                </tr>
               </table>
             </td>
         <% end %>

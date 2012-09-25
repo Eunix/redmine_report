@@ -128,7 +128,7 @@
             <tr>
               <td>Итого:</td>
               <td class="spent_time"><%= week_issue_count.values.inject(0){|sum,x| sum+x} %></td>
-              <td class="spent_time"><%= week_spent_time.values.inject(0){|sum,x| sum+x} %></td>
+              <td class="spent_time"><%= "%.1f" % (week_spent_time.values.inject(0){|sum,x| sum+x}) %></td>
             </tr>
             <tr>
               <td colspan="2">Норма</td>

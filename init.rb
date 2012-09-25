@@ -9,5 +9,9 @@ Redmine::Plugin.register :redmine_report do
   url 'https://github.com/Eunix/redmine_report'
   author_url 'https://github.com/Eunix'
 
-  menu :application_menu, :redmine_report, { :controller => 'time_reports', :action => 'index' }, :caption => 'Time Reports'
+  permission :view_reports, :time_reports => [:index, :create]
+  menu :application_menu,
+       :redmine_report, { :controller => 'time_reports', :action => 'index' },
+       :caption => 'Time Reports',
+       :if => Proc.new { User.current.logged? }
 end

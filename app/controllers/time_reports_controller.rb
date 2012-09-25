@@ -1,6 +1,7 @@
 class TimeReportsController < ApplicationController
   unloadable
 
+  before_filter :require_login
 
   def index
   end
@@ -10,4 +11,7 @@ class TimeReportsController < ApplicationController
 
     render :layout => 'report'
   end
+
+
+
 end

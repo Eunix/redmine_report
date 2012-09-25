@@ -5,6 +5,7 @@
   <tr>
     <th rowspan="2">Сотрудник</th>
     <th colspan="5">Задачи</th>
+    <th colspan="2" rowspan="2">Итого за неделю</th>
   </tr>
   <tr>
     <th>Пн</th>
@@ -15,7 +16,12 @@
   </tr>
   </thead>
   <tbody>
-  <% @reports.each do |report| %>
+  <%
+     user_week = {}
+     @reports.each do |report|
+     issue_count_week = {}
+     spent_time_week = {}
+  %>
       <tr>
         <td class="user_name"><%= report[:user_name] %></td>
 
@@ -27,6 +33,7 @@
                    spent_count = 0.0
                    day[1].each do |issue_type|
                      issue_count = issue_count + issue_type[1].size
+                     issue_count_week[issue_type[0]] = issue_count
                 %>
                     <tr>
                       <td class="issue_type" colspan="2"><%= issue_type[0] %> (<%= issue_type[1].size %>)</td>
@@ -34,6 +41,7 @@
                     <%
                        issue_type[1].each do |issue|
                          spent_count = spent_count + issue[1].to_f
+                         spent_time_week[issue_type[0]] = spent_count
                     %>
                         <%= show_issue_tr(issue, day[0]) %>
                     <% end %>
@@ -46,10 +54,43 @@
                   <td class="other">Норма 8 часов</td>
                   <td class="spent_time"><%= "%.0f" % (spent_count/8*100) %>%</td>
                 </tr>
+                <%
+
+                %>
               </table>
             </td>
         <% end %>
+
+        <td class="week">
+          <table>
+            <% issue_count_week.each do |issue_count|%>
+                <tr>
+                  <td class="week_type"><%= issue_count[0] %></td>
+                  <td class="spent_time"><%= issue_count[1] %></td>
+                  <td class="spent_time"><%= spent_time_week[issue_count[0]] %></td>
+                </tr>
+            <% end %>
+
+            <%
+               user_week[report[:user_name]] = {
+                       "issue_count" => issue_count_week.values.inject(0){|sum,x| sum+x},
+                       "spent_time"  => spent_time_week.values.inject(0){|sum,x| sum+x}
+               }
+            %>
+            <tr>
+              <td>Итого:</td>
+              <td class="spent_time"><%= user_week[report[:user_name]]["issue_count"] %></td>
+              <td class="spent_time"><%= user_week[report[:user_name]]["spent_time"] %></td>
+            </tr>
+            <tr>
+              <td colspan="2">Норма</td>
+              <td class="spent_time"><%= "%.0f" % (user_week[report[:user_name]]["spent_time"] / 40 * 100) %>%</td>
+            </tr>
+          </table>
+        </td>
       </tr>
   <% end %>
   </tbody>
 </table>
+
+<h3>Итого по отделу за неделю</h3>

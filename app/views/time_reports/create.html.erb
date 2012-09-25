@@ -21,40 +21,26 @@
 
         <% report[:days].each do |day| %>
 
-            <td>
+            <td class="day">
               <table>
                 <% issue_count = 0
                    spent_count = 0.0
                    day[1].each do |issue_type|
-                   issue_count = issue_count + issue_type[1].size
+                     issue_count = issue_count + issue_type[1].size
                 %>
                     <tr>
-                      <td class="issue_type"><%= issue_type[0] %> (<%= issue_type[1].size %>)</td>
-                      <td>
-                        <table>
-                          <%
-                             issue_type[1].each do |issue|
-                             spent_count = spent_count + issue[1].to_f
-                          %>
-                            <tr>
-                              <td class="issue_name"><%= Issue.find(issue[0]).subject %></td>
-                              <td class="spent_time"><%= issue[1] %></td>
-                            </tr>
-                          <% end %>
-                        </table>
-                      </td>
+                      <td class="issue_type" colspan="2"><%= issue_type[0] %> (<%= issue_type[1].size %>)</td>
                     </tr>
+                    <%
+                       issue_type[1].each do |issue|
+                         spent_count = spent_count + issue[1].to_f
+                    %>
+                        <%= show_issue_tr(issue) %>
+                    <% end %>
                 <% end %>
                 <tr>
                   <td class="issue_type">Итого (<%= issue_count %>)</td>
-                  <td>
-                    <table>
-                      <tr>
-                        <td class="issue_name"></td>
-                        <td class="spent_time"><%= spent_count %></td>
-                      </tr>
-                    </table>
-                  </td>
+                  <td class="spent_time"><%= spent_count %></td>
                 </tr>
               </table>
             </td>

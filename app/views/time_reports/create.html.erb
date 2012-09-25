@@ -17,7 +17,11 @@
   </thead>
   <tbody>
   <%
-     user_week = {}
+     # I don't like logic and trash in views but anyway…
+     week_count = {}
+     day_issue_count = {}
+     day_spent_count = {}
+
      @reports.each do |report|
      issue_count_week = {}
      spent_time_week = {}
@@ -29,30 +33,56 @@
 
             <td class="day">
               <table>
-                <% issue_count = 0
-                   spent_count = 0.0
+                <%
+                   # Init of day's counts
+                   unless day_issue_count[day]
+                     day_issue_count[day] = {}
+                   end
+                   unless day_spent_count[day]
+                     day_spent_count[day] = {}
+                   end
+
+                   day_issue_count[day][report[:user_name]] = 0
+                   day_spent_count[day][report[:user_name]] = 0.0
+
+                   # Issues by type
                    day[1].each do |issue_type|
-                     issue_count = issue_count + issue_type[1].size
-                     issue_count_week[issue_type[0]] = issue_count
+
+                     # Day count
+                     day_issue_count[day][report[:user_name]] = day_issue_count[day][report[:user_name]] + issue_type[1].size
+
+                     # Week count
+                     unless issue_count_week[issue_type[0]]
+                       issue_count_week[issue_type[0]] = 0
+                     end
+
+                     issue_count_week[issue_type[0]] = issue_count_week[issue_type[0]] + issue_type[1].size
                 %>
                     <tr>
                       <td class="issue_type" colspan="2"><%= issue_type[0] %> (<%= issue_type[1].size %>)</td>
                     </tr>
                     <%
+                       # Issues
                        issue_type[1].each do |issue|
-                         spent_count = spent_count + issue[1].to_f
-                         spent_time_week[issue_type[0]] = spent_count
+                         # Day count
+                         day_spent_count[day][report[:user_name]] = day_spent_count[day][report[:user_name]] + issue[1].to_f
+
+                         # Week count
+                         unless spent_time_week[issue_type[0]]
+                           spent_time_week[issue_type[0]] = 0.0
+                         end
+                         spent_time_week[issue_type[0]] = spent_time_week[issue_type[0]] + issue[1].to_f
                     %>
                         <%= show_issue_tr(issue, day[0]) %>
                     <% end %>
                 <% end %>
                 <tr>
-                  <td class="other">Итого (<%= issue_count %>)</td>
-                  <td class="spent_time"><%= spent_count %></td>
+                  <td class="other">Итого (<%= day_issue_count[day][report[:user_name]] %>)</td>
+                  <td class="spent_time"><%= day_spent_count[day][report[:user_name]] %></td>
                 </tr>
                 <tr>
                   <td class="other">Норма 8 часов</td>
-                  <td class="spent_time"><%= "%.0f" % (spent_count/8*100) %>%</td>
+                  <td class="spent_time"><%= "%.0f" % (day_spent_count[day][report[:user_name]] / 8 * 100) %>%</td>
                 </tr>
                 <%
 
@@ -72,19 +102,19 @@
             <% end %>
 
             <%
-               user_week[report[:user_name]] = {
+               week_count[report[:user_name]] = {
                        "issue_count" => issue_count_week.values.inject(0){|sum,x| sum+x},
                        "spent_time"  => spent_time_week.values.inject(0){|sum,x| sum+x}
                }
             %>
             <tr>
               <td>Итого:</td>
-              <td class="spent_time"><%= user_week[report[:user_name]]["issue_count"] %></td>
-              <td class="spent_time"><%= user_week[report[:user_name]]["spent_time"] %></td>
+              <td class="spent_time"><%= week_count[report[:user_name]]["issue_count"] %></td>
+              <td class="spent_time"><%= week_count[report[:user_name]]["spent_time"] %></td>
             </tr>
             <tr>
               <td colspan="2">Норма</td>
-              <td class="spent_time"><%= "%.0f" % (user_week[report[:user_name]]["spent_time"] / 40 * 100) %>%</td>
+              <td class="spent_time"><%= "%.0f" % (week_count[report[:user_name]]["spent_time"] / 40 * 100) %>%</td>
             </tr>
           </table>
         </td>
@@ -92,5 +122,3 @@
   <% end %>
   </tbody>
 </table>
-
-<h3>Итого по отделу за неделю</h3>

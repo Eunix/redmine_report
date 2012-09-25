@@ -35,12 +35,16 @@
                        issue_type[1].each do |issue|
                          spent_count = spent_count + issue[1].to_f
                     %>
-                        <%= show_issue_tr(issue) %>
+                        <%= show_issue_tr(issue, day[0]) %>
                     <% end %>
                 <% end %>
                 <tr>
-                  <td class="issue_type">Итого (<%= issue_count %>)</td>
+                  <td class="other">Итого (<%= issue_count %>)</td>
                   <td class="spent_time"><%= spent_count %></td>
+                </tr>
+                <tr>
+                  <td class="other">Норма 8 часов</td>
+                  <td class="spent_time"><%= "%.0f" % (spent_count/8*100) %>%</td>
                 </tr>
               </table>
             </td>

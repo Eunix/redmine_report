@@ -1,3 +1,6 @@
+# Patches to the Redmine core
+require_dependency 'issue_patch'
+
 Redmine::Plugin.register :redmine_report do
   name 'Redmine Report plugin'
   author 'Evgeny Pavlov'

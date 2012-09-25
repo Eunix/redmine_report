@@ -38,67 +38,69 @@
         %>
 
             <td class="day">
-              <table>
-                <%
-                   # Init of day's counts
-                   unless day_issue_count[day[0]]
-                     day_issue_count[day[0]] = {}
-                   end
-                   unless day_spent_count[day[0]]
-                     day_spent_count[day[0]] = {}
-                   end
-
-                   # Issues by type
-                   day[1].each do |issue_type|
-                     # User count
-                     user_issue_count = user_issue_count + issue_type[1].size
-
-                     # Day count
-                     unless day_issue_count[day[0]][issue_type[0]]
-                       day_issue_count[day[0]][issue_type[0]] = 0
-                     end
-                     day_issue_count[day[0]][issue_type[0]] = day_issue_count[day[0]][issue_type[0]] + issue_type[1].size
-
-                     # Week count
-                     unless week_issue_count[issue_type[0]]
-                       week_issue_count[issue_type[0]] = 0
-                     end
-                     week_issue_count[issue_type[0]] = week_issue_count[issue_type[0]] + issue_type[1].size
-                %>
-                    <tr>
-                      <td class="issue_type" colspan="2"><%= issue_type[0] %> (<%= issue_type[1].size %>)</td>
-                    </tr>
+              <% if day[1].size > 0 %>
+                  <table>
                     <%
-                       # Issues
-                       issue_type[1].each do |issue|
+                       # Init of day's counts
+                       unless day_issue_count[day[0]]
+                         day_issue_count[day[0]] = {}
+                       end
+                       unless day_spent_count[day[0]]
+                         day_spent_count[day[0]] = {}
+                       end
+
+                       # Issues by type
+                       day[1].each do |issue_type|
                          # User count
-                         user_spent_count = user_spent_count + issue[1].to_f
+                         user_issue_count = user_issue_count + issue_type[1].size
 
                          # Day count
-                         unless day_spent_count[day[0]][issue_type[0]]
-                           day_spent_count[day[0]][issue_type[0]] = 0.0
+                         unless day_issue_count[day[0]][issue_type[0]]
+                           day_issue_count[day[0]][issue_type[0]] = 0
                          end
-                         day_spent_count[day[0]][issue_type[0]] = day_spent_count[day[0]][issue_type[0]] + issue[1].to_f
-
+                         day_issue_count[day[0]][issue_type[0]] = day_issue_count[day[0]][issue_type[0]] + issue_type[1].size
 
                          # Week count
-                         unless week_spent_time[issue_type[0]]
-                           week_spent_time[issue_type[0]] = 0.0
+                         unless week_issue_count[issue_type[0]]
+                           week_issue_count[issue_type[0]] = 0
                          end
-                         week_spent_time[issue_type[0]] = week_spent_time[issue_type[0]] + issue[1].to_f
+                         week_issue_count[issue_type[0]] = week_issue_count[issue_type[0]] + issue_type[1].size
                     %>
-                        <%= show_issue_tr(issue, day[0]) %>
+                        <tr>
+                          <td class="issue_type" colspan="2"><%= issue_type[0] %> (<%= issue_type[1].size %>)</td>
+                        </tr>
+                        <%
+                           # Issues
+                           issue_type[1].each do |issue|
+                             # User count
+                             user_spent_count = user_spent_count + issue[1].to_f
+
+                             # Day count
+                             unless day_spent_count[day[0]][issue_type[0]]
+                               day_spent_count[day[0]][issue_type[0]] = 0.0
+                             end
+                             day_spent_count[day[0]][issue_type[0]] = day_spent_count[day[0]][issue_type[0]] + issue[1].to_f
+
+
+                             # Week count
+                             unless week_spent_time[issue_type[0]]
+                               week_spent_time[issue_type[0]] = 0.0
+                             end
+                             week_spent_time[issue_type[0]] = week_spent_time[issue_type[0]] + issue[1].to_f
+                        %>
+                            <%= show_issue_tr(issue, day[0]) %>
+                        <% end %>
                     <% end %>
-                <% end %>
-                <tr>
-                  <td class="other">Итого (<%= user_issue_count %>)</td>
-                  <td class="spent_time"><%= user_spent_count %></td>
-                </tr>
-                <tr>
-                  <td class="other">Норма 8 часов</td>
-                  <td class="spent_time"><%= "%.0f" % (user_spent_count / 8 * 100) %>%</td>
-                </tr>
-              </table>
+                    <tr>
+                      <td class="other">Итого (<%= user_issue_count %>)</td>
+                      <td class="spent_time"><%= user_spent_count %></td>
+                    </tr>
+                    <tr>
+                      <td class="other">Норма 8 часов</td>
+                      <td class="spent_time"><%= "%.0f" % (user_spent_count / 8 * 100) %>%</td>
+                    </tr>
+                  </table>
+              <% end %>
             </td>
         <% end %>
 

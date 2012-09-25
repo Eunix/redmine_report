@@ -38,17 +38,18 @@
         %>
 
             <td class="day">
-              <% if day[1].size > 0 %>
+              <%
+                 # Init of day's counts
+                 unless day_issue_count[day[0]]
+                   day_issue_count[day[0]] = {}
+                 end
+                 unless day_spent_count[day[0]]
+                   day_spent_count[day[0]] = {}
+                 end
+
+                 if day[1].size > 0 %>
                   <table>
                     <%
-                       # Init of day's counts
-                       unless day_issue_count[day[0]]
-                         day_issue_count[day[0]] = {}
-                       end
-                       unless day_spent_count[day[0]]
-                         day_spent_count[day[0]] = {}
-                       end
-
                        # Issues by type
                        day[1].each do |issue_type|
                          # User count
@@ -100,6 +101,8 @@
                       <td class="spent_time"><%= "%.0f" % (user_spent_count / 8 * 100) %>%</td>
                     </tr>
                   </table>
+              <% else %>
+                  <i>не работал</i>
               <% end %>
             </td>
         <% end %>
